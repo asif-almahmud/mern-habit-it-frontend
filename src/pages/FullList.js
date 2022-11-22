@@ -7,7 +7,7 @@ import { useHabitsContext } from "../hooks/useHabitsContext";
 const FullList = () => {
   const { habits, dispatch } = useHabitsContext();
   // const [habits, setHabits] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const fetchHabits = async () => {
@@ -34,22 +34,21 @@ const FullList = () => {
     navigate("/create");
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    fetchHabits();
+  }, []);
   return (
-    <div>
+    <div className="max-w-4xl mx-auto">
       {" "}
       <h2 className="text-center text-xl font-semibold">All HABITits</h2>
       <div className="flex flex-col gap-8 my-16">
-        {habits.map((habit) => (
-          <React.Fragment key={habit._id}>
-            <HabitDetails habit={habit} noCompleteState />
-          </React.Fragment>
-        ))}
-        {loading && (
-          <div className="text-center tracking-widest text-lg font-semibold text-[#72BB9C]">
-            Loading...
-          </div>
-        )}
+        {!loading &&
+          habits.map((habit) => (
+            <React.Fragment key={habit._id}>
+              <HabitDetails habit={habit} noCompleteState />
+            </React.Fragment>
+          ))}
+        {loading && <div className="loader m-auto mt-12"></div>}
         {!loading && habits.length < 1 && (
           <div className="flex flex-col justify-center items-center gap-12">
             <div className="text-center">You you have no HABITits</div>

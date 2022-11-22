@@ -11,7 +11,7 @@ const Home = () => {
   const { day } = useDay();
   const { habits, dispatch } = useHabitsContext();
   // const [habits, setHabits] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isNewDay, setIsNewDay] = useState(false);
 
   console.log({ habits });
@@ -65,15 +65,19 @@ const Home = () => {
         <div className="basis-full md:basis-4/5 md:pr-8 pb-12 md:border-r">
           <DayAndTime />
           <div className="flex flex-col gap-8 my-16">
-            {habits.map((habit) => (
-              <React.Fragment key={habit._id}>
-                <HabitDetails habit={habit} />
-              </React.Fragment>
-            ))}
+            {!loading &&
+              habits.map((habit) => (
+                <React.Fragment key={habit._id}>
+                  <HabitDetails habit={habit} />
+                </React.Fragment>
+              ))}
             {loading && (
-              <div className="text-center tracking-widest text-lg font-semibold text-[#72BB9C]">
+              <>
+                {/* <div className="text-center tracking-widest text-lg font-semibold text-[#72BB9C]">
                 Loading...
-              </div>
+              </div> */}
+                <div className="loader m-auto mt-12"></div>
+              </>
             )}
             {!loading && habits.length < 1 && (
               <div className="text-center">
