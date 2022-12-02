@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import axiosClient from "../api/axiosClient";
 import usePatch from "../hooks/fetch/usePatch";
 import usePost from "../hooks/fetch/usePost";
@@ -88,6 +89,7 @@ const AddNewHabitForm = ({ edit = false }) => {
           console.log({ data });
 
           if (data) {
+            toast.success("Success");
             console.log({ posted: data });
             dispatch({ type: "ADD_HABIT", payload: data });
             setNewHabit("");
@@ -123,6 +125,7 @@ const AddNewHabitForm = ({ edit = false }) => {
           console.log({ data });
 
           if (data) {
+            toast.success("Success");
             console.log({ posted: data });
             dispatch({ type: "UPDATE_HABIT", payload: data });
             setNewHabit("");
