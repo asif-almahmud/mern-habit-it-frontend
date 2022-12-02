@@ -10,7 +10,7 @@ import Quotes from "../components/Quotes";
 
 const Home = () => {
   const { day } = useDay();
-  const { todayHabits, date, dispatch } = useHabitsContext();
+  const { todayHabits, allHabits, date, dispatch } = useHabitsContext();
   const [loading, setLoading] = useState(true);
   const { getRequest } = useGet();
 
@@ -39,7 +39,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchHabits();
-  }, [day]);
+  }, [day, allHabits]);
 
   return (
     <div className="flex relative ">

@@ -27,7 +27,6 @@ export const habitsReducer = (state, action) => {
     case "ADD_HABIT":
       return {
         ...state,
-        todayHabits: [action.payload, ...state.todayHabits],
         allHabits: [action.payload, ...state.allHabits],
       };
     case "UPDATE_HABIT":

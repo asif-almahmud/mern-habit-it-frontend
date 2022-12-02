@@ -66,3 +66,6 @@ function App() {
 }
 
 export default App;
+
+// frontend - https://habit-it.onrender.com/
+// backend - https://habitit.onrender.com/
