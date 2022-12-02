@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import useUserContext from "../../hooks/useUserContext";
 import NavbarLink from "../NavbarLink";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const { user, dispatch } = useUserContext();
+
+  console.log({ navbar: user });
 
   console.log({ location });
 
@@ -14,6 +18,13 @@ const Navbar = () => {
     } else {
       setIsScrolled(false);
     }
+  }
+
+  function handleLogout() {
+    dispatch({ type: "LOGOUT" });
+    console.log({ user });
+    localStorage.removeItem("habitit-user");
+    console.log(user);
   }
 
   useEffect(() => {
@@ -36,9 +47,34 @@ const Navbar = () => {
             </h1>
           </Link>
         </div>
-        <div className="flex items-center gap-4">
-          <NavbarLink to="/">Home</NavbarLink>
-          <NavbarLink to="/full-list">Full List</NavbarLink>
+        <div className="flex flex-col items-center sm:flex-row gap-4 ">
+          <div className="flex gap-4 mt-[2px]">
+            <NavbarLink to="/">Home</NavbarLink>
+            <NavbarLink to="/full-list">All HABITits</NavbarLink>
+          </div>
+          <div className="flex items-center divide-x divide-solid divide-gray-400/50 border rounded-md bg-[#e9eae9] ">
+            {!user ? (
+              <>
+                <div className="px-2 py-1 hover:bg-[#d7d9d8] duration-300 rounded-l-md">
+                  <NavbarLink to="/login" borderBottom={false}>
+                    Login
+                  </NavbarLink>
+                </div>
+                <div className="px-2 py-1 hover:bg-[#d7d9d8] duration-300 rounded-r-md">
+                  <NavbarLink to="/signup" borderBottom={false}>
+                    Signup
+                  </NavbarLink>
+                </div>
+              </>
+            ) : (
+              <button
+                className="px-2 py-1 hover:bg-[#d7d9d8] rounded-md duration-300 "
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </header>

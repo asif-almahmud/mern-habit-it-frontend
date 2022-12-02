@@ -3,21 +3,28 @@ import React, { useState } from "react";
 import { useHabitsContext } from "../hooks/useHabitsContext";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { Link, useNavigate } from "react-router-dom";
+import usePatch from "../hooks/fetch/usePatch";
+import useDelete from "../hooks/fetch/useDelete";
 
 const HabitDetails = ({ habit, noCompleteState = false }) => {
   const { _id, title, reps, createdAt, isDone } = habit;
   const { dispatch } = useHabitsContext();
+  const { patchRequest } = usePatch();
+  const { deleteRequest } = useDelete();
   const navigate = useNavigate();
 
+  console.log({ fromHabitDetails: habit });
   const iconStyle =
     "flex justify-center items-center cursor-pointer hover:bg-[#dbf0db] w-[28px] h-[28px] rounded-full active:bg-[#bce4bc] duration-500";
 
   const handleDelete = async () => {
     try {
-      const res = await axios.delete(`/api/habits/${_id}`);
-      const data = await res.data;
-      console.log({ deleted: data });
-      if (data) {
+      const res = await deleteRequest(`/habits/${_id}`, {
+        withAuthHeader: true,
+      });
+
+      if (res?.data) {
+        console.log({ deleted: res?.data });
         dispatch({ type: "DELETE_HABIT", payload: _id });
       }
     } catch (err) {
@@ -38,7 +45,9 @@ const HabitDetails = ({ habit, noCompleteState = false }) => {
     const payload = { title, reps, isDone: !isDone };
 
     try {
-      const res = await axios.patch(`/api/habits/${_id}`, payload);
+      const res = await patchRequest(`/habits/${_id}`, payload, {
+        withAuthHeader: true,
+      });
       const data = res.data;
       console.log({ upDatedForIsDone: data });
 

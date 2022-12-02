@@ -1,13 +1,19 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Footer from "./components/layout/Footer";
 import Navbar from "./components/layout/Navbar";
+import useUserContext from "./hooks/useUserContext";
 import Create from "./pages/Create";
 import Edit from "./pages/Edit";
 import FullList from "./pages/FullList";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Welcome from "./pages/Welcome";
 
 function App() {
-  console.log("rendering");
+  const { user } = useUserContext();
+  const browsed = JSON.parse(localStorage.getItem("browsed"));
+  console.log({ browsed });
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col justify-between text-slate-600">
@@ -15,10 +21,41 @@ function App() {
           <Navbar />
           <div className="max-w-7xl mx-auto px-8">
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route
+                path="/"
+                element={
+                  user ? (
+                    <Home />
+                  ) : !browsed ? (
+                    <Navigate to="/welcome" />
+                  ) : (
+                    <Navigate to="/login" />
+                  )
+                }
+              />
               <Route path="/create" element={<Create />} />
               <Route path="/edit" element={<Edit />} />
-              <Route path="/full-list" element={<FullList />} />
+              <Route
+                path="/full-list"
+                element={
+                  user ? (
+                    <FullList />
+                  ) : !browsed ? (
+                    <Navigate to="/welcome" />
+                  ) : (
+                    <Navigate to="/login" />
+                  )
+                }
+              />
+              <Route
+                path="/login"
+                element={!user ? <Login /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/signup"
+                element={!user ? <Signup /> : <Navigate to="/" />}
+              />
+              <Route path="/welcome" element={<Welcome />} />
             </Routes>
           </div>
         </div>

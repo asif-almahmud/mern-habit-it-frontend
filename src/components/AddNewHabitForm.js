@@ -1,6 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import axiosClient from "../api/axiosClient";
+import usePatch from "../hooks/fetch/usePatch";
+import usePost from "../hooks/fetch/usePost";
 import { useHabitsContext } from "../hooks/useHabitsContext";
 import { days } from "../utils/date";
 
@@ -20,12 +23,18 @@ const AddNewHabitForm = ({ edit = false }) => {
   const [newHabit, setNewHabit] = useState("");
   const [reps, setReps] = useState([]);
   const [errorMessage, setErrorMessage] = useState({ newHabit: "", reps: "" });
-  const [shouldWait, setShouldWait] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { dispatch } = useHabitsContext();
   const location = useLocation();
   const { pathname } = location;
   const navigate = useNavigate();
   const { toBeEdited } = useHabitsContext();
+  const { postRequest, loading: loadingPostData, error: postError } = usePost();
+  const {
+    patchRequest,
+    loading: loadingPatchData,
+    error: patchError,
+  } = usePatch();
 
   console.log({ toBeEdited });
 
@@ -65,15 +74,16 @@ const AddNewHabitForm = ({ edit = false }) => {
         });
     } else {
       if (!edit) {
-        setShouldWait(true);
+        setLoading(true);
         const orderedReps = days.filter((day) => reps.includes(day));
         const payload = {
           title: newHabit,
           reps: orderedReps,
-          isDone: false,
         };
         try {
-          const res = await axios.post("/api/habits", payload);
+          const res = await postRequest("/habits", payload, {
+            withAuthHeader: true,
+          });
           const data = res.data;
           console.log({ data });
 
@@ -82,7 +92,7 @@ const AddNewHabitForm = ({ edit = false }) => {
             dispatch({ type: "ADD_HABIT", payload: data });
             setNewHabit("");
             setReps([]);
-            setShouldWait(false);
+            setLoading(false);
             if (pathname.includes("create")) {
               navigate("/");
             }
@@ -93,12 +103,12 @@ const AddNewHabitForm = ({ edit = false }) => {
             err.message +
               ". May be you didn't fill all the fields. Otherwise please check your internet connection."
           );
-          setShouldWait(false);
+          setLoading(false);
         }
       }
 
       if (edit) {
-        setShouldWait(true);
+        setLoading(true);
         const orderedReps = days.filter((day) => reps.includes(day));
         const payload = {
           title: newHabit,
@@ -106,10 +116,9 @@ const AddNewHabitForm = ({ edit = false }) => {
           isDone: toBeEdited.isDone,
         };
         try {
-          const res = await axios.patch(
-            `/api/habits/${toBeEdited._id}`,
-            payload
-          );
+          const res = await patchRequest(`/habits/${toBeEdited._id}`, payload, {
+            withAuthHeader: true,
+          });
           const data = res.data;
           console.log({ data });
 
@@ -118,9 +127,9 @@ const AddNewHabitForm = ({ edit = false }) => {
             dispatch({ type: "UPDATE_HABIT", payload: data });
             setNewHabit("");
             setReps([]);
-            setShouldWait(false);
+            setLoading(false);
             if (pathname.includes("edit")) {
-              navigate("/");
+              navigate(-1);
             }
           }
         } catch (err) {
@@ -129,7 +138,7 @@ const AddNewHabitForm = ({ edit = false }) => {
             err.message +
               ". May be you didn't fill all the fields. Otherwise please check your internet connection."
           );
-          setShouldWait(false);
+          setLoading(false);
         }
       }
     }
@@ -145,11 +154,10 @@ const AddNewHabitForm = ({ edit = false }) => {
   return (
     <div className={`${styles.colCenter} gap-6`}>
       <div className={`${styles.rowCenter} font-medium`}>
-        {!edit ? "Add New Work to Daily" : "Edit the Selected"}
+        {!edit ? "Add New" : "Edit the Selected"}
         <span className="tracking-wide font-medium text-[#529B7C]">
           &nbsp;HABITit&nbsp;
         </span>
-        {!edit ? "List" : ""}
       </div>
       <form onSubmit={handleSubmit}>
         <div className={`${styles.colCenter} gap-4`}>
@@ -168,7 +176,7 @@ const AddNewHabitForm = ({ edit = false }) => {
               placeholder="Doing something..."
               className={styles.inputStyle}
             />
-            <p className="text-red-400">{errorMessage.newHabit}</p>
+            <p className="text-red-400 text-sm">{errorMessage.newHabit}</p>
           </div>
           <div className={styles.colCenter}>
             <h4 className="text-center">Repeat it :</h4>
@@ -195,25 +203,18 @@ const AddNewHabitForm = ({ edit = false }) => {
                 </span>
               ))}
             </div>
-            <p className="text-red-400">{errorMessage.reps}</p>
+            <p className="text-red-400 text-sm">{errorMessage.reps}</p>
           </div>
 
           <div className={`${styles.rowCenter} font-semibold`}>
-            {!shouldWait ? (
-              <input
-                type="submit"
-                value="Submit"
-                className="bg-white/60 hover:bg-gray-100 hover:border-gray-400 text-xs px-3 py-1 border-2 border-gray-400/50 rounded-full cursor-pointer active:border-gray-500/80 active:outline active:outline-[#92dbbC] transition-colors ease-in-out duration-300"
-              />
-            ) : (
-              <button
-                type="submit"
-                disabled
-                className="bg-white/60 text-xs px-3 py-1 border-2 border-gray-400/50 rounded-full"
-              >
-                Please wait...
-              </button>
-            )}
+            <input
+              type="submit"
+              value="Submit"
+              disabled={loading}
+              className={`bg-white/60 hover:bg-gray-100 hover:border-gray-400 text-xs px-3 py-1 border-2 border-gray-400/50 rounded-full cursor-pointer focus:border-gray-500/80 focus:outline focus:outline-[#92dbbC] transition-colors ease-in-out duration-300 ${
+                loading ? "text-gray-300" : ""
+              }`}
+            />
           </div>
         </div>
       </form>
@@ -225,7 +226,7 @@ const AddNewHabitForm = ({ edit = false }) => {
               navigate(-1);
             }}
           >
-            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            <i className="fa fa-arrow-left" aria-hidden="true"></i>
           </button>
         )}
       </div>
