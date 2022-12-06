@@ -29,7 +29,7 @@ const Login = () => {
       });
       return;
     }
-    if (password.length < 7) {
+    if (password.length < 6) {
       setErrorMessage((prev) => {
         return {
           ...prev,
@@ -118,7 +118,10 @@ const Login = () => {
       <input
         type="submit"
         value="Login"
-        className="mt-4 bg-white/60 hover:bg-gray-100 hover:border-gray-400 text-sm px-3 py-2 border-2 border-gray-400/50 rounded-full cursor-pointer focus:border-gray-500/80 focus:outline focus:outline-[#92dbbC] transition-colors ease-in-out duration-300 font-semibold"
+        disabled={loading}
+        className={`mt-4 bg-white/60 hover:bg-gray-100 hover:border-gray-400 text-sm px-3 py-2 border-2 border-gray-400/50 rounded-full cursor-pointer focus:border-gray-500/80 transition-colors ease-in-out duration-300 font-semibold ${
+          loading && "text-gray-300 hover:border-gray-300"
+        }`}
       />
     </form>
   );

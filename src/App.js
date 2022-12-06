@@ -74,3 +74,5 @@ export default App;
 
 // frontend - https://habit-it.onrender.com/
 // backend - https://habitit.onrender.com/
+
+// Our free tier does spin down after 15 minutes of inactivity, so the first request after the service is spun down make take a while

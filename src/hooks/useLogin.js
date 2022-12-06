@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import usePost from "./fetch/usePost";
 import useUserContext from "./useUserContext";
 
@@ -7,8 +8,16 @@ const useLogin = () => {
 
   const login = async ({ email, password }) => {
     const payload = { email, password };
-
-    const response = await postRequest("/user/login", payload);
+    let response;
+    setTimeout(() => {
+      if (!response) {
+        toast.info(
+          "Please wait. We are using the free plan of render.com which is automatically spun down after 15 minutes of inactivity. So it takes some time to start the server again.",
+          { autoClose: 8000 }
+        );
+      }
+    }, 3000);
+    response = await postRequest("/user/login", payload);
     // console.log({ response });
     if (response) {
       dispatch({ type: "LOGIN", payload: response.data });

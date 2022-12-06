@@ -28,11 +28,7 @@ const HabitDetails = ({ habit, noCompleteState = false }) => {
         dispatch({ type: "DELETE_HABIT", payload: _id });
       }
     } catch (err) {
-      console.log(err);
       alert(err.message);
-
-      // setNewHabit("");
-      // setReps([]);
     }
   };
 
