@@ -11,14 +11,14 @@ const useGet = () => {
   async function getRequest(...rest) {
     let response;
 
-    setTimeout(() => {
-      if (user && !response) {
-        toast.info(
-          "Please wait. We are using the free plan of render.com which is automatically spun down after 15 minutes of inactivity. So it takes some time to start the server again.",
-          { autoClose: 8000 }
-        );
-      }
-    }, 3000);
+    // setTimeout(() => {
+    //   if (user && !response) {
+    //     toast.info(
+    //       "Please wait. We are using the free plan of render.com which is automatically spun down after 15 minutes of inactivity. So it takes some time to start the server again.",
+    //       { autoClose: 8000 }
+    //     );
+    //   }
+    // }, 3000);
 
     try {
       if (!user) {
