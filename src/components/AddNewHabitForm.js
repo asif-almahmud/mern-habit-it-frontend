@@ -89,7 +89,7 @@ const AddNewHabitForm = ({ edit = false }) => {
           console.log({ data });
 
           if (data) {
-            toast.success("Success");
+            toast.success("Successfully added");
             dispatch({ type: "ADD_HABIT", payload: data });
             setNewHabit("");
             setReps([]);
@@ -124,7 +124,7 @@ const AddNewHabitForm = ({ edit = false }) => {
           console.log({ data });
 
           if (data) {
-            toast.success("Success");
+            toast.success("Successfully updated");
             console.log({ posted: data });
             dispatch({ type: "UPDATE_HABIT", payload: data });
             setNewHabit("");

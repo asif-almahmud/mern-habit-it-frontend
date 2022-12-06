@@ -12,24 +12,6 @@ const useGet = () => {
   async function getRequest(...rest) {
     let response;
 
-    setTimeout(() => {
-      if (user && !response) {
-        toast.info(
-          "Please wait. We are using the free plan of render.com which is automatically spun down after 15 minutes of inactivity. So it's taking some time.",
-          { autoClose: 8000 }
-        );
-      }
-    }, 3000);
-
-    // setTimeout(() => {
-    //   if (user && !response) {
-    //     toast.info(
-    //       "Please wait. We are using the free plan of render.com which is automatically spun down after 15 minutes of inactivity. So it takes some time to start the server again.",
-    //       { autoClose: 8000 }
-    //     );
-    //   }
-    // }, 3000);
-
     try {
       if (!user) {
         setError("User not loggedin");
@@ -66,7 +48,7 @@ const useGet = () => {
     if (loading && showNotificationOnDelay) {
       toast.info(
         "You might be experiencing some delay due to the 15 minutes inactivity policy applied by render.com for their free plans.",
-        { autoClose: 7000 }
+        { autoClose: 10000 }
       );
     }
   }, [showNotificationOnDelay]);

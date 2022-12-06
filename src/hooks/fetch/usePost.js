@@ -42,7 +42,7 @@ const usePost = () => {
     if (loading && showNotificationOnDelay) {
       toast.info(
         "You might be experiencing some delay due to the 15 minutes inactivity policy applied by render.com for their free plans.",
-        { autoClose: 7000 }
+        { autoClose: 10000 }
       );
     }
   }, [showNotificationOnDelay]);

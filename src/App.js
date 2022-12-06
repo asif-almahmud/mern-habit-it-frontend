@@ -65,7 +65,7 @@ function App() {
           <Footer />
         </div>
       </BrowserRouter>
-      <ToastContainer position="top-right" autoClose={1000} />
+      <ToastContainer position="top-right" autoClose={2500} />
     </>
   );
 }

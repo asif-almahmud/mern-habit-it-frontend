@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import usePost from "./fetch/usePost";
 import useUserContext from "./useUserContext";
 
@@ -10,7 +9,7 @@ const useSignup = () => {
     const payload = { name, email, password };
 
     const response = await postRequest("/user/signup", payload);
-    // console.log({ response });
+
     if (response) {
       dispatch({ type: "LOGIN", payload: response.data });
       localStorage.setItem("habitit-user", JSON.stringify(response.data));
