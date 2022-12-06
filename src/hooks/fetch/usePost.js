@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import axiosClient from "../../api/axiosClient";
 import useUserContext from "../useUserContext";
@@ -6,6 +6,7 @@ import useUserContext from "../useUserContext";
 const usePost = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [showNotificationOnDelay, setShowNotificationOnDelay] = useState(false);
   const { user } = useUserContext();
 
   async function postRequest(...rest) {
@@ -18,15 +19,6 @@ const usePost = () => {
     setLoading(true);
     let response;
 
-    // setTimeout(() => {
-    //   if (!response) {
-    //     toast.info(
-    //       "Please wait. We are using the free plan of render.com which is automatically spun down after 15 minutes of inactivity. So it takes some time to start the server again.",
-    //       { autoClose: 8000 }
-    //     );
-    //   }
-    // }, 3000);
-
     try {
       response = await axiosClient.post(`${url}`, payload, { headers });
       setLoading(false);
@@ -37,6 +29,23 @@ const usePost = () => {
     }
     return response;
   }
+
+  useEffect(() => {
+    if (loading && !showNotificationOnDelay) {
+      setTimeout(() => {
+        setShowNotificationOnDelay(true);
+      }, 3000);
+    }
+  }, [loading]);
+
+  useEffect(() => {
+    if (loading && showNotificationOnDelay) {
+      toast.info(
+        "You might be experiencing some delay due to the 15 minutes inactivity policy applied by render.com for their free plans.",
+        { autoClose: 7000 }
+      );
+    }
+  }, [showNotificationOnDelay]);
 
   return { postRequest, loading, error };
 };

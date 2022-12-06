@@ -6,6 +6,7 @@ import useUserContext from "../useUserContext";
 const useDelete = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [showNotificationOnDelay, setShowNotificationOnDelay] = useState(false);
   const { user } = useUserContext();
 
   async function deleteRequest(...rest) {
@@ -19,15 +20,6 @@ const useDelete = () => {
 
     let response;
 
-    // setTimeout(() => {
-    //   if (!response) {
-    //     toast.info(
-    //       "Please wait. We are using the free plan of render.com which is automatically spun down after 15 minutes of inactivity. So it takes some time to start the server again.",
-    //       { autoClose: 8000 }
-    //     );
-    //   }
-    // }, 3000);
-
     try {
       response = await axiosClient.delete(`${url}`, { headers });
       setLoading(false);
@@ -39,7 +31,22 @@ const useDelete = () => {
     return response;
   }
 
-  useEffect(() => {}, [loading]);
+  useEffect(() => {
+    if (loading && !showNotificationOnDelay) {
+      setTimeout(() => {
+        setShowNotificationOnDelay(true);
+      }, 3000);
+    }
+  }, [loading]);
+
+  useEffect(() => {
+    if (loading && showNotificationOnDelay) {
+      toast.info(
+        "You might be experiencing some delay due to the 15 minutes inactivity policy applied by render.com for their free plans.",
+        { autoClose: 7000 }
+      );
+    }
+  }, [showNotificationOnDelay]);
 
   return { deleteRequest, loading, error };
 };
